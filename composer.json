@@ -13,7 +13,8 @@
         "mindy/core": "dev-master",
         "mindy/helper": "dev-master",
         "mindy/exception": "dev-master",
-        "mindy/cache": "dev-master"
+        "mindy/cache": "dev-master",
+        "aura/router": "1.1.1"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master"

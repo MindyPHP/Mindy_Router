@@ -14,59 +14,98 @@
 
 namespace Mindy\Router;
 
+use Exception;
+use Yii;
+
 class Patterns
 {
-    public function __construct($alias)
+    public $patterns = [];
+
+    public $namespace = '';
+
+    protected $parentPrefix;
+
+    public function __construct($patterns, $namespace = '')
     {
-        $this->path = Alias::get($alias);
-    }
-
-    public function parse(array $parentRules = [], array $parentNames = [], $parentNamespace='', $prefix = '')
-    {
-        $className = __CLASS__;
-
-        $rules = $names = [];
-        foreach ($this->rawRules as $pattern => $item) {
-            if ($item instanceof $className) {
-                $patternParsed = $item->parse($rules, $names, $this->namespace, $this->formatPrefix($pattern, $prefix));
-                $rules = array_merge($rules, $patternParsed->rules);
-                $names = array_merge($names, $patternParsed->names);
-                unset($patternParsed);
-            } else if (is_array($item)) {
-                $pattern = $this->formatPrefix($pattern, $prefix);
-
-                if (isset($parentRules[$pattern]) || array_key_exists($pattern, $parentRules)) {
-                    throw new DuplicateUrlException("{$pattern} already registered");
-                }
-
-                if(!isset($item[0])) {
-                    throw new CallbackNotFoundException();
-                }
-
-                $callback = $item[0];
-
-                $rules[$pattern] = new Route($pattern, $item, $callback);
-
-                if (isset($item['name']) || array_key_exists('name', $item)) {
-                    $name = $parentNamespace . $this->namespace . $item['name'];
-                    if (!$prefix && (isset($parentNames[$name]) || array_key_exists($name, $parentNames))) {
-                        throw new DuplicateNameException("{$name} already registered");
-                    }
-
-                    // $names[$name] = $this->patternize($pattern);
-
-                    $routeData = $item;
-                    unset($routeData[0]);
-                    unset($routeData['name']);
-                    $names[$name] = new Route($pattern, $routeData);
-                }
+        if(is_string($patterns)) {
+            $tmp = Yii::getPathOfAlias($patterns);
+            if(!is_file($tmp)) {
+                $tmp = $patterns;
+            }
+            $patterns = require $tmp;
+            if(!is_array($patterns)) {
+                throw new Exception("Patterns must be a an array or alias to routes file");
             }
         }
-        gc_collect_cycles();
+        $this->patterns = $patterns;
+        $this->namespace = $namespace;
+    }
 
-        $this->names = $names;
-        $this->rules = $rules;
-
+    public function setParentPrefix($prefix)
+    {
+        $this->parentPrefix = $prefix;
         return $this;
+    }
+
+    public function getPrefix($prefix)
+    {
+        return $this->parentPrefix ? $this->parentPrefix . $prefix : $prefix;
+    }
+
+    public function parse(array $patterns)
+    {
+        $className = __CLASS__;
+        $routes = [];
+        foreach($patterns as $urlPrefix => $params) {
+            if($params instanceof $className) {
+                /* @var $params Patterns */
+                $routes = array_merge($routes, $params->setParentPrefix($urlPrefix)->getRoutes());
+            } else {
+                if(!array_key_exists('callback', $params)) {
+                    continue;
+                } else {
+                    $callback = explode(':', $params['callback']);
+                    list($controller, $action) = $callback;
+                    $callbackParams = [
+                        'controller' => $controller,
+                        'action' => $action
+                    ];
+
+                    if(array_key_exists('values', $params)) {
+                        $params['values'] = array_merge($params['values'], $callbackParams);
+                    } else {
+                        $params['values'] = $callbackParams;
+                    }
+                    unset($params['callback']);
+                }
+
+                $prefix = $this->parentPrefix ? $this->parentPrefix : $urlPrefix;
+                if(!array_key_exists($prefix, $routes)) {
+                    $routes[$prefix] = [
+                        'routes' => []
+                    ];
+                }
+
+                if(!empty($this->namespace)) {
+                    $routes[$prefix]['name_prefix'] = $this->namespace . '.';
+                }
+
+                $name = $params['name'];
+                unset($params['name']);
+                if(count($params) == 0) {
+                    $params = $urlPrefix;
+                } else {
+                    $params['path'] = $urlPrefix;
+                }
+                $routes[$prefix]['routes'][$name] = $params;
+            }
+        }
+
+        return $routes;
+    }
+
+    public function getRoutes()
+    {
+        return $this->parse($this->patterns);
     }
 }
