@@ -29,12 +29,20 @@ class Patterns
     {
         if(is_string($patterns)) {
             $tmp = Yii::getPathOfAlias($patterns);
-            if(!is_file($tmp)) {
+            if(!$tmp) {
                 $tmp = $patterns;
+            } else {
+                $tmp .= '.php';
             }
-            $patterns = require $tmp;
+
+            if(is_file($tmp)) {
+                $patterns = require $tmp;
+            } else {
+                throw new Exception("No such urls file $tmp");
+            }
+
             if(!is_array($patterns)) {
-                throw new Exception("Patterns must be a an array or alias to routes file");
+                throw new Exception("Patterns must be a an array or alias to routes file: $patterns");
             }
         }
         $this->patterns = $patterns;
@@ -64,6 +72,10 @@ class Patterns
                 if(!array_key_exists('callback', $params)) {
                     continue;
                 } else {
+                    if($urlPrefix[0] != '/') {
+                        $urlPrefix = '/' . $urlPrefix;
+                    }
+
                     $callback = explode(':', $params['callback']);
                     list($controller, $action) = $callback;
                     $callbackParams = [
@@ -92,11 +104,7 @@ class Patterns
 
                 $name = $params['name'];
                 unset($params['name']);
-                if(count($params) == 0) {
-                    $params = $urlPrefix;
-                } else {
-                    $params['path'] = $urlPrefix;
-                }
+                $params['path'] = $prefix == $urlPrefix ? '' : $urlPrefix;
                 $routes[$prefix]['routes'][$name] = $params;
             }
         }
