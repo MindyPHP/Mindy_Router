@@ -25,6 +25,8 @@ class Patterns
 
     protected $parentPrefix;
 
+    protected $trailingSlash = false;
+
     public function __construct($patterns, $namespace = '')
     {
         if(is_string($patterns)) {
@@ -47,6 +49,12 @@ class Patterns
         }
         $this->patterns = $patterns;
         $this->namespace = $namespace;
+    }
+
+    public function setTrailingSlash($value)
+    {
+        $this->trailingSlash = $value;
+        return $this;
     }
 
     public function setParentPrefix($prefix)
