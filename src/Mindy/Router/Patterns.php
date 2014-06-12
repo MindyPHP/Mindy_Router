@@ -15,7 +15,7 @@
 namespace Mindy\Router;
 
 use Exception;
-use Yii;
+use Mindy\Helper\Alias;
 
 class Patterns
 {
@@ -30,7 +30,7 @@ class Patterns
     public function __construct($patterns, $namespace = '')
     {
         if(is_string($patterns)) {
-            $tmp = Yii::getPathOfAlias($patterns);
+            $tmp = Alias::get($patterns);
             if(!$tmp) {
                 $tmp = $patterns;
             } else {
