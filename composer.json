@@ -9,7 +9,7 @@
     },
     "require": {
         "php": ">=5.4",
-        "mindy/logger": "dev-master",
+        "mindy/logger": "1.0.1",
         "mindy/core": "dev-master",
         "mindy/helper": "dev-master",
         "mindy/exception": "dev-master",
@@ -19,14 +19,12 @@
     "require-dev": {
         "satooshi/php-coveralls": "dev-master"
     },
-    "authors": [
-        {
-            "name": "Maxim Falaleev",
-            "email": "max@studio107.ru",
-            "homepage": "http://studio107.ru",
-            "role": "Developer"
-        }
-    ],
+    "authors": [{
+        "name": "Maxim Falaleev",
+        "email": "max@studio107.ru",
+        "homepage": "http://studio107.ru",
+        "role": "Developer"
+    }],
     "support": {
         "issues": "https://github.com/studio107/Mindy_Router/issues?state=open"
     }
