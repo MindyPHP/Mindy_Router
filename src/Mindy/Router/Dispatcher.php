@@ -3,7 +3,6 @@
 namespace Mindy\Router;
 
 use Mindy\Router\Exception\HttpMethodNotAllowedException;
-use Mindy\Router\Exception\HttpRouteNotFoundException;
 
 class Dispatcher
 {
@@ -28,18 +27,21 @@ class Dispatcher
     public function dispatch($httpMethod, $uri)
     {
         $data = $this->dispatchRoute($httpMethod, trim($uri, '/'));
-        if($data === false) {
+        if ($data === false) {
             return false;
         }
 
         list($handler, $vars) = $data;
 
-        $resolvedHandler = $this->resolveHandler($handler);
-
-        return call_user_func_array($resolvedHandler, $vars);
+        return $this->getResponse($this->resolveHandler($handler), $vars);
     }
 
-    private function resolveHandler($handler)
+    public function getResponse($handler, $vars)
+    {
+        return call_user_func_array($handler, $vars);
+    }
+
+    public function resolveHandler($handler)
     {
         if (is_array($handler) and is_string($handler[0])) {
             $handler[0] = new $handler[0];
