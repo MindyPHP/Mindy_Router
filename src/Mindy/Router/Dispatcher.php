@@ -71,7 +71,7 @@ class Dispatcher
 
     private function checkFallbacks($routes, $httpMethod)
     {
-        $additional = array(Route::ANY);
+        $additional = [Route::ANY];
 
         if ($httpMethod === Route::HEAD) {
             $additional[] = Route::GET;

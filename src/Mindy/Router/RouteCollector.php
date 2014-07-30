@@ -26,13 +26,15 @@ class RouteCollector
     public function route($name, $args = [])
     {
         $replacements = (array)$args;
-
-        return count($replacements) ? preg_replace(array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/'), $replacements, $this->reverse[$name], 1) : $this->reverse[$name];
+        if(count($replacements)) {
+            return preg_replace(array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/'), $replacements, $this->reverse[$name], 1)
+        } else {
+            return $this->reverse[$name];
+        }
     }
 
     public function addRoute($httpMethod, $route, $handler)
     {
-
         if (is_array($route)) {
             list($route, $name) = $route;
         }
