@@ -8,11 +8,8 @@ use ReflectionMethod;
 
 class RouteCollector
 {
-
     const DEFAULT_CONTROLLER_ROUTE = 'index';
-
     const APPROX_CHUNK_SIZE = 10;
-
     private $routeParser;
     private $staticRoutes = [];
     private $regexToRoutesMap = [];
@@ -23,11 +20,11 @@ class RouteCollector
         $this->routeParser = $routeParser ? : new RouteParser();
     }
 
-    public function route($name, $args = [])
+    public function reverse($name, $args = [])
     {
         $replacements = (array)$args;
-        if(count($replacements)) {
-            return preg_replace(array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/'), $replacements, $this->reverse[$name], 1)
+        if (count($replacements)) {
+            return preg_replace(array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/'), $replacements, $this->reverse[$name], 1);
         } else {
             return $this->reverse[$name];
         }
