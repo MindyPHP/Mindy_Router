@@ -1,30 +1,36 @@
 {
     "name": "mindy/router",
     "homepage": "https://github.com/studio107/Mindy_Router",
-    "license": "MIT",
+    "description": "Fast request router for PHP",
+    "keywords": ["routing", "router"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Joe Green",
+            "email": "joe.green.0991@gmail.com"
+        },
+        {
+            "name": "Nikita Popov",
+            "email": "nikic@php.net"
+        },
+        {
+            "name": "Maxim Falaleev",
+            "email": "max@studio107.ru",
+            "homepage": "http://studio107.ru",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-0": {
             "": "src/"
         }
     },
     "require": {
-        "php": ">=5.4",
-        "mindy/logger": "1.0.1",
-        "mindy/core": "dev-master",
-        "mindy/helper": "dev-master",
-        "mindy/exception": "dev-master",
-        "mindy/cache": "dev-master",
-        "aura/router": "1.1.1"
+        "php": ">=5.4"
     },
     "require-dev": {
         "satooshi/php-coveralls": "dev-master"
     },
-    "authors": [{
-        "name": "Maxim Falaleev",
-        "email": "max@studio107.ru",
-        "homepage": "http://studio107.ru",
-        "role": "Developer"
-    }],
     "support": {
         "issues": "https://github.com/studio107/Mindy_Router/issues?state=open"
     }
