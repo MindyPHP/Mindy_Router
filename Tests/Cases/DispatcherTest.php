@@ -114,14 +114,12 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideNotFoundDispatchCases
-     * @expectedException \Mindy\Router\Exception\HttpRouteNotFoundException
-     * @expectedExceptionMessage does not exist
      */
     public function testNotFoundDispatches($method, $uri, $callback)
     {
         $r = $this->router();
         $callback($r);
-        $this->dispatch($r, $method, $uri);
+        $this->assertFalse($this->dispatch($r, $method, $uri));
     }
 
     /**
@@ -362,43 +360,31 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    /**
-     * @expectedException \Mindy\Router\Exception\HttpRouteNotFoundException
-     * @expectedExceptionMessage does not exist
-     */
     public function testRestfulOptionalRequiredControllerMethodThrows()
     {
         $r = $this->router();
 
         $r->controller('/user', __NAMESPACE__ . '\\Test');
 
-        $this->dispatch($r, Route::GET, 'user/parameter-optional-required');
+        $this->assertFalse($this->dispatch($r, Route::GET, 'user/parameter-optional-required'));
     }
 
-    /**
-     * @expectedException \Mindy\Router\Exception\HttpRouteNotFoundException
-     * @expectedExceptionMessage does not exist
-     */
     public function testRestfulRequiredControllerMethodThrows()
     {
         $r = $this->router();
 
         $r->controller('/user', __NAMESPACE__ . '\\Test');
 
-        $this->dispatch($r, Route::GET, 'user/parameter-required');
+        $this->assertFalse($this->dispatch($r, Route::GET, 'user/parameter-required'));
     }
 
-    /**
-     * @expectedException \Mindy\Router\Exception\HttpRouteNotFoundException
-     * @expectedExceptionMessage does not exist
-     */
     public function testRestfulHyphenateControllerMethodThrows()
     {
         $r = $this->router();
 
         $r->controller('/user', __NAMESPACE__ . '\\Test');
 
-        $this->dispatch($r, Route::GET, 'user/camelcasehyphenated');
+        $this->assertFalse($this->dispatch($r, Route::GET, 'user/camelcasehyphenated'));
     }
 
     public function testRestfulMethods()

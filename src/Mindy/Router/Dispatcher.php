@@ -22,7 +22,12 @@ class Dispatcher
 
     public function dispatch($httpMethod, $uri)
     {
-        list($handler, $filters, $vars) = $this->dispatchRoute($httpMethod, trim($uri, '/'));
+        $data = $this->dispatchRoute($httpMethod, trim($uri, '/'));
+        if($data === false) {
+            return false;
+        }
+
+        list($handler, $filters, $vars) = $data;
 
         list($beforeFilter, $afterFilter) = $this->parseFilters($filters);
 
@@ -143,7 +148,8 @@ class Dispatcher
             return $routes[$httpMethod];
         }
 
-        throw new HttpRouteNotFoundException('Route ' . $uri . ' does not exist');
+        // throw new HttpRouteNotFoundException('Route ' . $uri . ' does not exist');
+        return false;
     }
 
 }
