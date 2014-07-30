@@ -7,6 +7,10 @@ use Mindy\Router\Exception\HttpMethodNotAllowedException;
 class Dispatcher
 {
     /**
+     * @var RouteCollector
+     */
+    public $collector;
+    /**
      * @var
      */
     public $matchedRoute;
@@ -19,14 +23,22 @@ class Dispatcher
      */
     private $variableRouteData;
 
-    public function __construct(RouteCollector $data)
+    public function __construct(RouteCollector $collector)
     {
-        list($this->staticRouteMap, $this->variableRouteData) = $data->getData();
+        $this->collector = $collector;
+        list($this->staticRouteMap, $this->variableRouteData) = $collector->getData();
+    }
+
+    public function reverse($name, $args = [])
+    {
+        return $this->collector->reverse($name, $args);
     }
 
     public function dispatch($httpMethod, $uri)
     {
-        $data = $this->dispatchRoute($httpMethod, trim($uri, '/'));
+        $uri = strtok($uri, '?');
+        $uri = trim($uri, '/');
+        $data = $this->dispatchRoute($httpMethod, $uri);
         if ($data === false) {
             return false;
         }

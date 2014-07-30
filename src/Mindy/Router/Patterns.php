@@ -51,31 +51,23 @@ class Patterns
         $this->namespace = $namespace;
     }
 
+    public function getPatterns()
+    {
+        return $this->patterns;
+    }
+
     public function setTrailingSlash($value)
     {
         $this->trailingSlash = $value;
         return $this;
     }
 
-    public function setParentPrefix($prefix)
+    public function parse(RouteCollector $collector, array $patterns, $parentPrefix = '')
     {
-        $this->parentPrefix = $prefix;
-        return $this;
-    }
-
-    public function getPrefix($prefix)
-    {
-        return $this->parentPrefix ? $this->parentPrefix . $prefix : $prefix;
-    }
-
-    public function parse(array $patterns)
-    {
-        $className = __CLASS__;
-        $routes = [];
         foreach($patterns as $urlPrefix => $params) {
-            if($params instanceof $className) {
+            if($params instanceof Patterns || $params instanceof CustomPatterns) {
                 /* @var $params Patterns */
-                $routes = array_merge($routes, $params->setParentPrefix($urlPrefix)->getRoutes());
+                $params->parse($collector, $params->getPatterns(), $urlPrefix);
             } else {
                 if(!array_key_exists('callback', $params)) {
                     continue;
@@ -85,43 +77,23 @@ class Patterns
                     }
 
                     $callback = explode(':', $params['callback']);
-                    list($controller, $action) = $callback;
-                    $callbackParams = [
-                        'controller' => $controller,
-                        'action' => $action
-                    ];
-
-                    if(array_key_exists('values', $params)) {
-                        $params['values'] = array_merge($params['values'], $callbackParams);
-                    } else {
-                        $params['values'] = $callbackParams;
-                    }
-                    unset($params['callback']);
-                }
-
-                $prefix = $this->parentPrefix ? $this->parentPrefix : $urlPrefix;
-                if(!array_key_exists($prefix, $routes)) {
-                    $routes[$prefix] = [
-                        'routes' => []
-                    ];
                 }
 
                 if(!empty($this->namespace)) {
-                    $routes[$prefix]['name_prefix'] = $this->namespace . '.';
+                    $name = $this->namespace . '.' . $params['name'];
+                } else {
+                    $name = $params['name'];
                 }
 
-                $name = $params['name'];
-                unset($params['name']);
-                $params['path'] = $prefix == $urlPrefix ? '' : $urlPrefix;
-                $routes[$prefix]['routes'][$name] = $params;
+                $collector->any([$parentPrefix . $urlPrefix, $name], $callback);
             }
         }
-
-        return $routes;
     }
 
-    public function getRoutes()
+    public function getRouteCollector()
     {
-        return $this->parse($this->patterns);
+        $collector = new RouteCollector(new RouteParser);
+        $this->parse($collector, $this->patterns);
+        return $collector;
     }
 }

@@ -3,6 +3,7 @@
 namespace Mindy\Router;
 
 use Mindy\Router\Exception\BadRouteException;
+use Mindy\Router\Exception\HttpRouteNotFoundException;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -22,6 +23,10 @@ class RouteCollector
 
     public function reverse($name, $args = [])
     {
+        if(!isset($this->reverse[$name])) {
+            throw new HttpRouteNotFoundException("Route with name $name not found");
+        }
+
         $replacements = (array)$args;
         if (count($replacements)) {
             return preg_replace(array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/'), $replacements, $this->reverse[$name], 1);
@@ -65,7 +70,7 @@ class RouteCollector
             }
         }
 
-        $this->staticRoutes[$routeStr][$httpMethod] = array($handler, []);
+        $this->staticRoutes[$routeStr][$httpMethod] = [$handler, []];
     }
 
     private function addVariableRoute($httpMethod, $routeData, $handler)
@@ -76,7 +81,7 @@ class RouteCollector
             throw new BadRouteException("Cannot register two routes matching '$regex' for method '$httpMethod'");
         }
 
-        $this->regexToRoutesMap[$regex][$httpMethod] = array($handler, $variables);
+        $this->regexToRoutesMap[$regex][$httpMethod] = [$handler, $variables];
     }
 
     public function get($route, $handler)
