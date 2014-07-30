@@ -2,11 +2,8 @@
 
 namespace Mindy\Router;
 
-interface Route {
-    
-    const BEFORE = 'before';
-    const AFTER = 'after';
-    
+interface Route
+{
     const ANY = 'ANY';
     const GET = 'GET';
     const HEAD = 'HEAD';

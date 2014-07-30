@@ -2,7 +2,6 @@
 
 namespace Mindy\Router;
 
-use Closure;
 use Mindy\Router\Exception\BadRouteException;
 use ReflectionClass;
 use ReflectionMethod;
@@ -15,12 +14,9 @@ class RouteCollector
     const APPROX_CHUNK_SIZE = 10;
 
     private $routeParser;
-    private $filters;
     private $staticRoutes = [];
     private $regexToRoutesMap = [];
     private $reverse = [];
-
-    private $globalFilters = [];
 
     public function __construct(RouteParser $routeParser = null)
     {
@@ -34,7 +30,7 @@ class RouteCollector
         return count($replacements) ? preg_replace(array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/'), $replacements, $this->reverse[$name], 1) : $this->reverse[$name];
     }
 
-    public function addRoute($httpMethod, $route, $handler, array $filters = [])
+    public function addRoute($httpMethod, $route, $handler)
     {
 
         if (is_array($route)) {
@@ -47,18 +43,16 @@ class RouteCollector
             $this->reverse[$name] = $reverseData;
         }
 
-        $filters = array_merge_recursive($this->globalFilters, $filters);
-
-        if(isset($routeData[1])) {
-            $this->addVariableRoute($httpMethod, $routeData, $handler, $filters);
+        if (isset($routeData[1])) {
+            $this->addVariableRoute($httpMethod, $routeData, $handler);
         } else {
-            $this->addStaticRoute($httpMethod, $routeData, $handler, $filters);
+            $this->addStaticRoute($httpMethod, $routeData, $handler);
         }
 
         return $this;
     }
 
-    private function addStaticRoute($httpMethod, $routeData, $handler, $filters)
+    private function addStaticRoute($httpMethod, $routeData, $handler)
     {
         $routeStr = $routeData[0];
 
@@ -72,10 +66,10 @@ class RouteCollector
             }
         }
 
-        $this->staticRoutes[$routeStr][$httpMethod] = array($handler, $filters, []);
+        $this->staticRoutes[$routeStr][$httpMethod] = array($handler, []);
     }
 
-    private function addVariableRoute($httpMethod, $routeData, $handler, $filters)
+    private function addVariableRoute($httpMethod, $routeData, $handler)
     {
         list($regex, $variables) = $routeData;
 
@@ -83,60 +77,42 @@ class RouteCollector
             throw new BadRouteException("Cannot register two routes matching '$regex' for method '$httpMethod'");
         }
 
-        $this->regexToRoutesMap[$regex][$httpMethod] = array($handler, $filters, $variables);
+        $this->regexToRoutesMap[$regex][$httpMethod] = array($handler, $variables);
     }
 
-    public function group(array $filters, Closure $callback)
+    public function get($route, $handler)
     {
-        $oldGlobal = $this->globalFilters;
-        $this->globalFilters = array_merge_recursive($this->globalFilters, array_intersect_key($filters, array(Route::AFTER => 1, Route::BEFORE => 1)));
-        $callback($this);
-        $this->globalFilters = $oldGlobal;
+        return $this->addRoute(Route::GET, $route, $handler);
     }
 
-    public function filter($name, $handler)
+    public function head($route, $handler)
     {
-        $this->filters[$name] = $handler;
+        return $this->addRoute(Route::HEAD, $route, $handler);
     }
 
-    public function get($route, $handler, array $filters = [])
+    public function post($route, $handler)
     {
-        return $this->addRoute(Route::GET, $route, $handler, $filters);
+        return $this->addRoute(Route::POST, $route, $handler);
     }
 
-    public function head($route, $handler, array $filters = [])
+    public function put($route, $handler)
     {
-        return $this->addRoute(Route::HEAD, $route, $handler, $filters);
+        return $this->addRoute(Route::PUT, $route, $handler);
     }
 
-    public function post($route, $handler, array $filters = [])
+    public function delete($route, $handler)
     {
-        return $this->addRoute(Route::POST, $route, $handler, $filters);
+        return $this->addRoute(Route::DELETE, $route, $handler);
     }
 
-    public function put($route, $handler, array $filters = [])
+    public function options($route, $handler)
     {
-        return $this->addRoute(Route::PUT, $route, $handler, $filters);
+        return $this->addRoute(Route::OPTIONS, $route, $handler);
     }
 
-    public function delete($route, $handler, array $filters = [])
+    public function any($route, $handler)
     {
-        return $this->addRoute(Route::DELETE, $route, $handler, $filters);
-    }
-
-    public function options($route, $handler, array $filters = [])
-    {
-        return $this->addRoute(Route::OPTIONS, $route, $handler, $filters);
-    }
-
-    public function any($route, $handler, array $filters = [])
-    {
-        return $this->addRoute(Route::ANY, $route, $handler, $filters);
-    }
-
-    public function getFilters()
-    {
-        return $this->filters;
+        return $this->addRoute(Route::ANY, $route, $handler);
     }
 
     public function controller($route, $classname)
@@ -218,7 +194,7 @@ class RouteCollector
         $numGroups = 0;
         foreach ($regexToRoutesMap as $regex => $routes) {
             $firstRoute = reset($routes);
-            $numVariables = count($firstRoute[2]);
+            $numVariables = count($firstRoute[1]);
             $numGroups = max($numGroups, $numVariables);
 
             $regexes[] = $regex . str_repeat('()', $numGroups - $numVariables);

@@ -7,17 +7,22 @@ use Mindy\Router\Exception\HttpRouteNotFoundException;
 
 class Dispatcher
 {
-
-    private $staticRouteMap;
-    private $variableRouteData;
-    private $filters;
+    /**
+     * @var
+     */
     public $matchedRoute;
+    /**
+     * @var
+     */
+    private $staticRouteMap;
+    /**
+     * @var
+     */
+    private $variableRouteData;
 
     public function __construct(RouteCollector $data)
     {
         list($this->staticRouteMap, $this->variableRouteData) = $data->getData();
-
-        $this->filters = $data->getFilters();
     }
 
     public function dispatch($httpMethod, $uri)
@@ -27,19 +32,11 @@ class Dispatcher
             return false;
         }
 
-        list($handler, $filters, $vars) = $data;
-
-        list($beforeFilter, $afterFilter) = $this->parseFilters($filters);
-
-        if (($response = $this->dispatchFilters($beforeFilter)) !== null) {
-            return $response;
-        }
+        list($handler, $vars) = $data;
 
         $resolvedHandler = $this->resolveHandler($handler);
 
-        $response = call_user_func_array($resolvedHandler, $vars);
-
-        return $this->dispatchFilters($afterFilter, $response);
+        return call_user_func_array($resolvedHandler, $vars);
     }
 
     private function resolveHandler($handler)
@@ -49,35 +46,6 @@ class Dispatcher
         }
 
         return $handler;
-    }
-
-    private function dispatchFilters($filters, $response = null)
-    {
-        $args = $response ? array($response) : array();
-
-        while ($filter = array_shift($filters)) {
-            if (($filteredResponse = call_user_func_array($this->resolveHandler($filter), $args)) !== null) {
-                return $filteredResponse;
-            }
-        }
-
-        return $response;
-    }
-
-    private function parseFilters($filters)
-    {
-        $beforeFilter = array();
-        $afterFilter = array();
-
-        if (isset($filters[Route::BEFORE])) {
-            $beforeFilter = array_intersect_key($this->filters, array_flip((array)$filters[Route::BEFORE]));
-        }
-
-        if (isset($filters[Route::AFTER])) {
-            $afterFilter = array_intersect_key($this->filters, array_flip((array)$filters[Route::AFTER]));
-        }
-
-        return array($beforeFilter, $afterFilter);
     }
 
     private function dispatchRoute($httpMethod, $uri)
@@ -137,11 +105,11 @@ class Dispatcher
                 $httpMethod = $this->checkFallbacks($routes, $httpMethod);
             }
 
-            foreach (array_values($routes[$httpMethod][2]) as $i => $varName) {
+            foreach (array_values($routes[$httpMethod][1]) as $i => $varName) {
                 if (!isset($matches[$i + 1]) || $matches[$i + 1] === '') {
-                    unset($routes[$httpMethod][2][$varName]);
+                    unset($routes[$httpMethod][1][$varName]);
                 } else {
-                    $routes[$httpMethod][2][$varName] = $matches[$i + 1];
+                    $routes[$httpMethod][1][$varName] = $matches[$i + 1];
                 }
             }
 
