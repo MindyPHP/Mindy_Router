@@ -31,14 +31,13 @@ class Dispatcher
             return false;
         }
 
-        list($handler, $vars) = $data;
-
-        return $this->getResponse($this->resolveHandler($handler), $vars);
+        return $this->getResponse($data);
     }
 
-    public function getResponse($handler, $vars)
+    public function getResponse($data)
     {
-        return call_user_func_array($handler, $vars);
+        list($handler, $vars) = $data;
+        return call_user_func_array($this->resolveHandler($handler), $vars);
     }
 
     public function resolveHandler($handler)
