@@ -14,7 +14,7 @@ class RouteCollector
     private $routeParser;
     private $staticRoutes = [];
     private $regexToRoutesMap = [];
-    private $reverse = [];
+    public $reverse = [];
 
     public function __construct(RouteParser $routeParser = null)
     {
@@ -41,7 +41,7 @@ class RouteCollector
             list($route, $name) = $route;
         }
 
-        list($routeData, $reverseData) = $this->routeParser->parse(trim($route, '/'));
+        list($routeData, $reverseData) = $this->routeParser->parse(rtrim($route, '/'));
 
         if (isset($name)) {
             $this->reverse[$name] = $reverseData;

@@ -37,7 +37,7 @@ class Dispatcher
     public function dispatch($httpMethod, $uri)
     {
         $uri = strtok($uri, '?');
-        $uri = trim($uri, '/');
+        $uri = rtrim($uri, '/');
         $data = $this->dispatchRoute($httpMethod, $uri);
         if ($data === false) {
             return false;
