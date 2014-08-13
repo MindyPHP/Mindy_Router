@@ -26,7 +26,6 @@ class RouteCollector
         if(!isset($this->reverse[$name])) {
             throw new HttpRouteNotFoundException("Route with name $name not found");
         }
-
         $replacements = (array)$args;
         if (count($replacements)) {
             return preg_replace(array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/'), $replacements, $this->reverse[$name], 1);

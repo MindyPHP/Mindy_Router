@@ -130,7 +130,6 @@ class RouteParser
     private function staticParts($route, $nextOffset)
     {
         $static = preg_split('~(/)~u', substr($route, $this->regexOffset, $nextOffset - $this->regexOffset), 0, PREG_SPLIT_DELIM_CAPTURE);
-
         foreach ($static as $staticPart) {
             if ($staticPart) {
                 $this->parts[$this->partsCounter] = $staticPart;
