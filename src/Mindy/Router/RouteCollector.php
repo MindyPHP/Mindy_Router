@@ -28,7 +28,8 @@ class RouteCollector
         }
         $replacements = (array)$args;
         if (count($replacements)) {
-            return preg_replace(array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/'), $replacements, $this->reverse[$name], 1);
+            $match = array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/');
+            return preg_replace($match, $replacements, $this->reverse[$name], 1);
         } else {
             return $this->reverse[$name];
         }
@@ -40,7 +41,11 @@ class RouteCollector
             list($route, $name) = $route;
         }
 
-        list($routeData, $reverseData) = $this->routeParser->parse(rtrim($route, '/'));
+        // Don't use trim function, because route must be like "//".
+        if(strpos($route, '/') === 0) {
+            $route = substr($route, 1);
+        }
+        list($routeData, $reverseData) = $this->routeParser->parse($route);
 
         if (isset($name)) {
             $this->reverse[$name] = $reverseData;

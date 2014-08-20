@@ -52,7 +52,7 @@ class RouteParser
         ':i}' => ':[0-9]+}',
         ':a}' => ':[0-9A-Za-z]+}',
         ':h}' => ':[0-9A-Fa-f]+}',
-        ':c}' => ':[a-zA-Z0-9+_-\.]+}'
+        ':c}' => ':[a-zA-Z0-9+_-\.]+}',
     ];
 
     /**
@@ -70,21 +70,14 @@ class RouteParser
         }
 
         foreach ($matches as $set) {
-
             $this->staticParts($route, $set[0][1]);
-
             $this->validateVariable($set[1][0]);
-
             $regexPart = (isset($set[2]) ? trim($set[2][0]) : self::DEFAULT_DISPATCH_REGEX);
-
             $this->regexOffset = $set[0][1] + strlen($set[0][0]);
-
             $match = '(' . $regexPart . ')';
-
             if (substr($set[0][0], -1) === '?') {
                 $match = $this->makeOptional($match);
             }
-
             $this->reverseParts[$this->partsCounter] = '{' . $set[1][0] . '}';
             $this->parts[$this->partsCounter++] = $match;
         }
