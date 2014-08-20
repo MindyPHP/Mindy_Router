@@ -29,10 +29,12 @@ class RouteCollector
         $replacements = (array)$args;
         if (count($replacements)) {
             $match = array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/');
-            return preg_replace($match, $replacements, $this->reverse[$name], 1);
+            $url = preg_replace($match, $replacements, $this->reverse[$name], 1);
         } else {
-            return $this->reverse[$name];
+            $url = $this->reverse[$name];
         }
+
+        return '/' . ltrim($url, '/');
     }
 
     public function addRoute($httpMethod, $route, $handler)
