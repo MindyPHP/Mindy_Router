@@ -113,7 +113,6 @@ class Dispatcher
 
             $routes = $data['routeMap'][$count - 1];
 
-
             if (!isset($routes[$httpMethod])) {
                 $httpMethod = $this->checkFallbacks($routes, $httpMethod);
             }
