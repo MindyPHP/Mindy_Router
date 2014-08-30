@@ -23,6 +23,9 @@ class RouteCollector
 
     public function reverse($name, $args = [])
     {
+        if(empty($name)) {
+            throw new HttpRouteNotFoundException("Empty route name");
+        }
         if(!isset($this->reverse[$name])) {
             throw new HttpRouteNotFoundException("Route with name $name not found");
         }
