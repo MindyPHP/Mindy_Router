@@ -71,7 +71,7 @@ class UrlManager extends Dispatcher
 
         $route = $this->dispatch($request->http->getRequestType(), $url);
         if (!$route && $this->trailingSlash === true && substr($url, -1) !== '/') {
-            $newUri = $url . '/' . str_replace($url, '', $uri);
+            $newUri = $url . '/';
             $route = $this->dispatch($request->http->getRequestType(), $newUri);
             if ($route) {
                 $this->trailingSlashCallback($newUri);
