@@ -2,6 +2,10 @@
 
 namespace Mindy\Router;
 
+/**
+ * Interface Route
+ * @package Mindy\Router
+ */
 interface Route
 {
     const ANY = 'ANY';

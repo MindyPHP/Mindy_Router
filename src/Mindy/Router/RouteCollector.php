@@ -11,16 +11,37 @@ class RouteCollector
 {
     const DEFAULT_CONTROLLER_ROUTE = 'index';
     const APPROX_CHUNK_SIZE = 10;
-    private $routeParser;
-    private $staticRoutes = [];
-    private $regexToRoutesMap = [];
+    /**
+     * @var array
+     */
     public $reverse = [];
+    /**
+     * @var RouteParser
+     */
+    private $routeParser;
+    /**
+     * @var array
+     */
+    private $staticRoutes = [];
+    /**
+     * @var array
+     */
+    private $regexToRoutesMap = [];
 
+    /**
+     * @param RouteParser $routeParser
+     */
     public function __construct(RouteParser $routeParser = null)
     {
         $this->routeParser = $routeParser ? : new RouteParser();
     }
 
+    /**
+     * @param $name
+     * @param array $args
+     * @return string
+     * @throws Exception\HttpRouteNotFoundException
+     */
     public function reverse($name, $args = [])
     {
         if(empty($name)) {
@@ -40,6 +61,12 @@ class RouteCollector
         return '/' . ltrim($url, '/');
     }
 
+    /**
+     * @param $httpMethod
+     * @param $route
+     * @param $handler
+     * @return $this
+     */
     public function addRoute($httpMethod, $route, $handler)
     {
         if (is_array($route)) {
@@ -65,6 +92,12 @@ class RouteCollector
         return $this;
     }
 
+    /**
+     * @param $httpMethod
+     * @param $routeData
+     * @param $handler
+     * @throws Exception\BadRouteException
+     */
     private function addStaticRoute($httpMethod, $routeData, $handler)
     {
         $routeStr = $routeData[0];
@@ -82,6 +115,12 @@ class RouteCollector
         $this->staticRoutes[$routeStr][$httpMethod] = [$handler, []];
     }
 
+    /**
+     * @param $httpMethod
+     * @param $routeData
+     * @param $handler
+     * @throws Exception\BadRouteException
+     */
     private function addVariableRoute($httpMethod, $routeData, $handler)
     {
         list($regex, $variables) = $routeData;
@@ -93,70 +132,106 @@ class RouteCollector
         $this->regexToRoutesMap[$regex][$httpMethod] = [$handler, $variables];
     }
 
+    /**
+     * @param $route
+     * @param $handler
+     * @return $this
+     */
     public function get($route, $handler)
     {
         return $this->addRoute(Route::GET, $route, $handler);
     }
 
+    /**
+     * @param $route
+     * @param $handler
+     * @return $this
+     */
     public function head($route, $handler)
     {
         return $this->addRoute(Route::HEAD, $route, $handler);
     }
 
+    /**
+     * @param $route
+     * @param $handler
+     * @return $this
+     */
     public function post($route, $handler)
     {
         return $this->addRoute(Route::POST, $route, $handler);
     }
 
+    /**
+     * @param $route
+     * @param $handler
+     * @return $this
+     */
     public function put($route, $handler)
     {
         return $this->addRoute(Route::PUT, $route, $handler);
     }
 
+    /**
+     * @param $route
+     * @param $handler
+     * @return $this
+     */
     public function delete($route, $handler)
     {
         return $this->addRoute(Route::DELETE, $route, $handler);
     }
 
+    /**
+     * @param $route
+     * @param $handler
+     * @return $this
+     */
     public function options($route, $handler)
     {
         return $this->addRoute(Route::OPTIONS, $route, $handler);
     }
 
+    /**
+     * @param $route
+     * @param $handler
+     * @return $this
+     */
     public function any($route, $handler)
     {
         return $this->addRoute(Route::ANY, $route, $handler);
     }
 
+    /**
+     * @param $route
+     * @param $classname
+     * @return $this
+     */
     public function controller($route, $classname)
     {
         $reflection = new ReflectionClass($classname);
-
         $validMethods = $this->getValidMethods();
-
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             foreach ($validMethods as $valid) {
                 if (stripos($method->name, $valid) === 0) {
                     $methodName = $this->camelCaseToDashed(substr($method->name, strlen($valid)));
-
                     $params = $this->buildControllerParameters($method);
-
                     if ($methodName === self::DEFAULT_CONTROLLER_ROUTE) {
                         $this->addRoute($valid, $route . $params, array($classname, $method->name));
                     }
-
                     $sep = $route === '/' ? '' : '/';
-
                     $this->addRoute($valid, $route . $sep . $methodName . $params, array($classname, $method->name));
-
                     break;
                 }
             }
         }
-
         return $this;
     }
 
+    /**
+     * @param ReflectionMethod $method
+     * @return string
+     */
     private function buildControllerParameters(ReflectionMethod $method)
     {
         $params = '';
@@ -168,16 +243,26 @@ class RouteCollector
         return $params;
     }
 
+    /**
+     * @param $string
+     * @return string
+     */
     private function camelCaseToDashed($string)
     {
         return strtolower(preg_replace('/([A-Z])/', '-$1', lcfirst($string)));
     }
 
+    /**
+     * @return array
+     */
     public function getValidMethods()
     {
         return [Route::ANY, Route::GET, Route::POST, Route::PUT, Route::DELETE, Route::HEAD, Route::OPTIONS];
     }
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         if (empty($this->regexToRoutesMap)) {
@@ -187,6 +272,9 @@ class RouteCollector
         return [$this->staticRoutes, $this->generateVariableRouteData()];
     }
 
+    /**
+     * @return array
+     */
     private function generateVariableRouteData()
     {
         $chunkSize = $this->computeChunkSize(count($this->regexToRoutesMap));
@@ -194,12 +282,20 @@ class RouteCollector
         return array_map(array($this, 'processChunk'), $chunks);
     }
 
+    /**
+     * @param $count
+     * @return float
+     */
     private function computeChunkSize($count)
     {
         $numParts = max(1, round($count / self::APPROX_CHUNK_SIZE));
         return ceil($count / $numParts);
     }
 
+    /**
+     * @param $regexToRoutesMap
+     * @return array
+     */
     private function processChunk($regexToRoutesMap)
     {
         $routeMap = [];
