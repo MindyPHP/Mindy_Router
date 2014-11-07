@@ -113,7 +113,7 @@ class Patterns
                     $name = $params['name'];
                 }
 
-                $collector->any([$parentPrefix . $urlPrefix, $name], $callback);
+                $collector->any([trim($parentPrefix, '/') . '/' . ltrim($urlPrefix, '/'), $name], $callback);
             }
         }
     }
