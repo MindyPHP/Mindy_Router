@@ -38,10 +38,15 @@ class Patterns
      * @var bool
      */
     protected $trailingSlash = false;
+    /**
+     * @var string
+     */
+    private $namespaceDelimeter = '.';
 
     /**
      * @param $patterns
      * @param string $namespace
+     * @throws Exception
      */
     public function __construct($patterns, $namespace = '')
     {
@@ -104,11 +109,10 @@ class Patterns
                 }
 
                 if (!empty($this->namespace)) {
-                    $name = $this->namespace . '.' . $params['name'];
+                    $name = $this->namespace . $this->namespaceDelimeter . $params['name'];
                 } else {
                     $name = $params['name'];
                 }
-
                 $collector->any([trim($parentPrefix, '/') . '/' . ltrim($urlPrefix, '/'), $name], $callback);
             }
         }
