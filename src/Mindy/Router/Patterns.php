@@ -100,10 +100,6 @@ class Patterns
                 if (!array_key_exists('callback', $params)) {
                     continue;
                 } else {
-//                    if (isset($urlPrefix[0]) && $urlPrefix[0] != '/') {
-//                        $urlPrefix = '/' . $urlPrefix;
-//                    }
-
                     $callback = explode(':', $params['callback']);
                 }
 
