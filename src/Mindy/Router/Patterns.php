@@ -41,7 +41,7 @@ class Patterns
     /**
      * @var string
      */
-    private $namespaceDelimeter = '.';
+    private $namespaceDelimeter = ':';
 
     /**
      * @param $patterns

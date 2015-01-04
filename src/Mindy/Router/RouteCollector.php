@@ -46,6 +46,9 @@ class RouteCollector
         $url = array();
         $replacements = is_null($args) ? array() : array_values($args);
         $variable = 0;
+        if (!isset($this->reverse[$name])) {
+            throw new BadRouteException("Route " . $name . " not found");
+        }
         foreach ($this->reverse[$name] as $part) {
             if (!$part['variable']) {
                 $url[] = $part['value'];
