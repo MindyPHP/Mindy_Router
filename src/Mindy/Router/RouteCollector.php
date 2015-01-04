@@ -3,7 +3,6 @@
 namespace Mindy\Router;
 
 use Mindy\Router\Exception\BadRouteException;
-use Mindy\Router\Exception\HttpRouteNotFoundException;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -33,7 +32,7 @@ class RouteCollector
      */
     public function __construct(RouteParser $routeParser = null)
     {
-        $this->routeParser = $routeParser ? : new RouteParser();
+        $this->routeParser = $routeParser ?: new RouteParser();
     }
 
     /**
@@ -44,21 +43,22 @@ class RouteCollector
      */
     public function reverse($name, $args = [])
     {
-        if(empty($name)) {
-            throw new HttpRouteNotFoundException("Empty route name");
+        $url = array();
+        $replacements = is_null($args) ? array() : array_values($args);
+        $variable = 0;
+        foreach ($this->reverse[$name] as $part) {
+            if (!$part['variable']) {
+                $url[] = $part['value'];
+            } elseif (isset($replacements[$variable])) {
+                if ($part['optional']) {
+                    $url[] = '/';
+                }
+                $url[] = $replacements[$variable++];
+            } elseif (!$part['optional']) {
+                throw new BadRouteException("Expecting route variable '{$part['name']}'");
+            }
         }
-        if(!isset($this->reverse[$name])) {
-            throw new HttpRouteNotFoundException("Route with name $name not found");
-        }
-        $replacements = (array)$args;
-        if (count($replacements)) {
-            $match = array_fill(0, count($replacements), '/\{[^\{\}\/]+\}/');
-            $url = preg_replace($match, $replacements, $this->reverse[$name], 1);
-        } else {
-            $url = $this->reverse[$name];
-        }
-
-        return '/' . ltrim($url, '/');
+        return implode('', $url);
     }
 
     /**
@@ -74,7 +74,7 @@ class RouteCollector
         }
 
         // Don't use trim function, because route must be like "//".
-        if(strpos($route, '/') === 0) {
+        if (strpos($route, '/') === 0) {
             $route = substr($route, 1);
         }
         list($routeData, $reverseData) = $this->routeParser->parse($route);
