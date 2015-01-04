@@ -150,10 +150,10 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $r = $this->router();
 
         $r->addRoute('GET', array('/foo', 'name'), array(__NAMESPACE__ . '\\Test', 'route'));
-        $this->assertEquals('/foo', $r->reverse('name'));
+        $this->assertEquals('foo', $r->reverse('name'));
 
         $r->addRoute('GET', array('/foo/{name}/{something:i}', 'name2'), array(__NAMESPACE__ . '\\Test', 'route'));
-        $this->assertEquals('/foo/joe/something', $r->reverse('name2', ['joe', 'something']));
+        $this->assertEquals('foo/joe/something', $r->reverse('name2', ['joe', 'something']));
     }
 
     /**
@@ -169,7 +169,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Mindy\Router\Exception\BadRouteException
-     * @expectedExceptionMessage Cannot register two routes matching '/user/([^/]+)' for method 'GET'
+     * @expectedExceptionMessage Cannot register two routes matching 'user/([^/]+)' for method 'GET'
      */
     public function testDuplicateVariableRoute()
     {
@@ -184,7 +184,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Mindy\Router\Exception\BadRouteException
-     * @expectedExceptionMessage Cannot register two routes matching '/user' for method 'GET'
+     * @expectedExceptionMessage Cannot register two routes matching 'user' for method 'GET'
      */
     public function testDuplicateStaticRoute()
     {
@@ -199,7 +199,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Mindy\Router\Exception\BadRouteException
-     * @expectedExceptionMessage Static route '/user/nikic' is shadowed by previously defined variable route '/user/([^/]+)' for method 'GET'
+     * @expectedExceptionMessage Static route 'user/nikic' is shadowed by previously defined variable route 'user/([^/]+)' for method 'GET'
      */
     public function testShadowedStaticRoute()
     {
@@ -234,20 +234,20 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
         $data = $r->getData();
 
-        $this->assertEquals($r->getValidMethods(), array_keys($data[0]['/user/test']));
+        $this->assertEquals($r->getValidMethods(), array_keys($data[0]['user/test']));
 
-        $this->assertEquals(array(Route::ANY), array_keys($data[0]['/user']));
-        $this->assertEquals(array(Route::ANY), array_keys($data[0]['/user/index']));
+        $this->assertEquals(array(Route::ANY), array_keys($data[0]['user']));
+        $this->assertEquals(array(Route::ANY), array_keys($data[0]['user/index']));
 
-        $this->assertEquals('hyphenated', $this->dispatch($r, Route::GET, '/user/camel-case-hyphenated'));
+        $this->assertEquals('hyphenated', $this->dispatch($r, Route::GET, 'user/camel-case-hyphenated'));
 
-        $this->assertEquals('joe', $this->dispatch($r, Route::GET, '/user/parameter/joe'));
-        $this->assertEquals('joe', $this->dispatch($r, Route::GET, '/user/parameter-hyphenated/joe'));
+        $this->assertEquals('joe', $this->dispatch($r, Route::GET, 'user/parameter/joe'));
+        $this->assertEquals('joe', $this->dispatch($r, Route::GET, 'user/parameter-hyphenated/joe'));
 
-        $this->assertEquals('joe', $this->dispatch($r, Route::GET, '/user/parameter-optional/joe'));
-        $this->assertEquals('default', $this->dispatch($r, Route::GET, '/user/parameter-optional'));
-        $this->assertEquals('joedefault', $this->dispatch($r, Route::GET, '/user/parameter-optional-required/joe'));
-        $this->assertEquals('joegreen', $this->dispatch($r, Route::GET, '/user/parameter-optional-required/joe/green'));
+        $this->assertEquals('joe', $this->dispatch($r, Route::GET, 'user/parameter-optional/joe'));
+        $this->assertEquals('default', $this->dispatch($r, Route::GET, 'user/parameter-optional'));
+        $this->assertEquals('joedefault', $this->dispatch($r, Route::GET, 'user/parameter-optional-required/joe'));
+        $this->assertEquals('joegreen', $this->dispatch($r, Route::GET, 'user/parameter-optional-required/joe/green'));
 
     }
 
@@ -291,7 +291,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
         $data = $r->getData();
 
-        $this->assertEquals($methods, array_keys($data[0]['/user']));
+        $this->assertEquals($methods, array_keys($data[0]['user']));
     }
 
     public function provideFoundDispatchCases()
