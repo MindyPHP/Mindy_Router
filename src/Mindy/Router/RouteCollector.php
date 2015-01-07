@@ -44,7 +44,7 @@ class RouteCollector
     public function reverse($name, $args = [])
     {
         $url = array();
-        $replacements = is_null($args) ? array() : array_values($args);
+        $replacements = is_null($args) ? [] : array_values($args);
         $variable = 0;
         if (!isset($this->reverse[$name])) {
             throw new BadRouteException("Route " . $name . " not found");
@@ -61,7 +61,7 @@ class RouteCollector
                 throw new BadRouteException("Expecting route variable '{$part['name']}'");
             }
         }
-        return implode('', $url);
+        return '/' . implode('', $url);
     }
 
     /**

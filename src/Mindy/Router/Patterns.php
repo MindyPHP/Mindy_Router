@@ -13,6 +13,7 @@
 
 namespace Mindy\Router;
 
+use Closure;
 use Exception;
 use Mindy\Helper\Alias;
 
@@ -105,7 +106,11 @@ class Patterns
                 if (!array_key_exists('callback', $params)) {
                     continue;
                 } else {
-                    $callback = explode(':', $params['callback']);
+                    if ($params['callback'] instanceof Closure) {
+                        $callback = $params['callback'];
+                    } else {
+                        $callback = explode(':', $params['callback']);
+                    }
                 }
 
                 if (!empty($this->namespace)) {
