@@ -66,11 +66,11 @@ class RouteParser
         $route = strtr($route, $this->regexShortcuts);
 
         if (!$matches = $this->extractVariableRouteParts($route)) {
-            $reverse = array(
+            $reverse = [
                 'variable' => false,
                 'value' => $route
-            );
-            return [[$route], array($reverse)];
+            ];
+            return [[$route], [$reverse]];
         }
         foreach ($matches as $set) {
             $this->staticParts($route, $set[0][1]);
