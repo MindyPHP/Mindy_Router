@@ -109,7 +109,7 @@ class Dispatcher
 
             $count = count($matches);
 
-            while (!isset($data['routeMap'][$count++])) ;
+            while (!isset($data['routeMap'][$count++]));
 
             $routes = $data['routeMap'][$count - 1];
 
@@ -118,7 +118,8 @@ class Dispatcher
             }
 
             foreach (array_values($routes[$httpMethod][1]) as $i => $varName) {
-                if (!isset($matches[$i + 1]) || $matches[$i + 1] === '') {
+                // if (!isset($matches[$i + 1]) || $matches[$i + 1] === '') {
+                if (!isset($matches[$i + 1])) {
                     unset($routes[$httpMethod][1][$varName]);
                 } else {
                     $routes[$httpMethod][1][$varName] = $matches[$i + 1];
