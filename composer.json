@@ -5,25 +5,21 @@
     "version": "0.1",
     "keywords": ["routing", "router"],
     "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Joe Green",
-            "email": "joe.green.0991@gmail.com"
-        },
-        {
-            "name": "Nikita Popov",
-            "email": "nikic@php.net"
-        },
-        {
-            "name": "Maxim Falaleev",
-            "email": "max@studio107.ru",
-            "homepage": "http://studio107.ru",
-            "role": "Developer"
-        }
-    ],
+    "authors": [{
+        "name": "Joe Green",
+        "email": "joe.green.0991@gmail.com"
+    }, {
+        "name": "Nikita Popov",
+        "email": "nikic@php.net"
+    }, {
+        "name": "Maxim Falaleev",
+        "email": "max@studio107.ru",
+        "homepage": "http://studio107.ru",
+        "role": "Developer"
+    }],
     "autoload": {
-        "psr-0": {
-            "": "src/"
+        "psr-4": {
+            "Mindy\\Router\\": "src/Mindy/Router"
         }
     },
     "require": {
