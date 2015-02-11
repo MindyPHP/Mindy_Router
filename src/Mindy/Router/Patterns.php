@@ -118,7 +118,13 @@ class Patterns
                 } else {
                     $name = $params['name'];
                 }
-                $collector->any([trim($parentPrefix, '/') . '/' . ltrim($urlPrefix, '/'), $name], $callback);
+
+                $cleanPrefix = ltrim($urlPrefix, '/');
+                if (empty($cleanPrefix)) {
+                    $collector->any([trim($parentPrefix, '/') . $cleanPrefix, $name], $callback);
+                } else {
+                    $collector->any([trim($parentPrefix, '/') . '/' . $cleanPrefix, $name], $callback);
+                }
             }
         }
     }
