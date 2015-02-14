@@ -150,10 +150,10 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
         $r = $this->router();
 
         $r->addRoute('GET', array('/foo', 'name'), array(__NAMESPACE__ . '\\Test', 'route'));
-        $this->assertEquals('foo', $r->reverse('name'));
+        $this->assertEquals('/foo', $r->reverse('name'));
 
         $r->addRoute('GET', array('/foo/{name}/{something:i}', 'name2'), array(__NAMESPACE__ . '\\Test', 'route'));
-        $this->assertEquals('foo/joe/something', $r->reverse('name2', ['joe', 'something']));
+        $this->assertEquals('/foo/joe/something', $r->reverse('name2', ['joe', 'something']));
     }
 
     /**
