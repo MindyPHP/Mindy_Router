@@ -16,12 +16,8 @@ class UrlManager extends Dispatcher
     public function __construct($config = [])
     {
         $this->configure($config);
-
         $patterns = new Patterns(empty($this->patterns) ? $this->urlsAlias : $this->patterns);
-        $patterns->setTrailingSlash($this->trailingSlash);
-
         parent::__construct($patterns->getRouteCollector());
-
         $this->init();
     }
 
@@ -31,7 +27,6 @@ class UrlManager extends Dispatcher
 
     public function addPattern($prefix, Patterns $patterns)
     {
-        $patterns->setTrailingSlash($this->trailingSlash);
         $patterns->parse($this->collector, $patterns->getPatterns(), $prefix);
     }
 
