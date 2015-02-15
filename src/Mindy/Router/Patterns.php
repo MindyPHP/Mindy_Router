@@ -119,11 +119,16 @@ class Patterns
                     $name = $params['name'];
                 }
 
+                $method = 'any';
+                if (isset($params['method']) && in_array($params['method'], $collector->getValidMethods())) {
+                    $method = strtoupper($params['method']);
+                }
+
                 $cleanPrefix = ltrim($urlPrefix, '/');
                 if (empty($cleanPrefix)) {
-                    $collector->any([trim($parentPrefix, '/') . $cleanPrefix, $name], $callback);
+                    $collector->$method([trim($parentPrefix, '/') . $cleanPrefix, $name], $callback);
                 } else {
-                    $collector->any([trim($parentPrefix, '/') . '/' . $cleanPrefix, $name], $callback);
+                    $collector->$method([trim($parentPrefix, '/') . '/' . $cleanPrefix, $name], $callback);
                 }
             }
         }

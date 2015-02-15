@@ -13,21 +13,48 @@
 
 namespace Mindy\Router\Dispatcher;
 
+use Mindy\Router\Dispatcher;
 use Mindy\Router\Patterns;
 use TestCase;
+
+class CustomDispatcher extends Dispatcher
+{
+    public function trailingSlashCallback($uri)
+    {
+        return 301;
+    }
+}
 
 class PatternsTest extends TestCase
 {
     public function testSimple()
     {
+        $callback = function() {
+            return true;
+        };
+
         $patterns = new Patterns([
             '/' => new Patterns([
-                '/blog' => [
-
+                '/blog/' => [
+                    'name' => 'index',
+                    'callback' => $callback
                 ]
-            ], 'blog')
+            ], 'blog'),
+            '' => new Patterns([
+                'forum' => [
+                    'name' => 'index',
+                    'callback' => $callback
+                ]
+            ], 'forum')
         ]);
+        $c = $patterns->getRouteCollector();
 
-        $this->assertEquals([], $patterns->getPatterns());
+        $this->assertEquals('/blog/', $c->reverse('blog:index'));
+        $this->assertEquals('/forum', $c->reverse('forum:index'));
+
+        $d = new CustomDispatcher($c);
+
+        $this->assertNotNull($d->dispatch('GET', '/blog/'));
+        $this->assertEquals(301, $d->dispatch('GET', '/blog'));
     }
 }

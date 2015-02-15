@@ -260,7 +260,15 @@ class RouteCollector
      */
     public function getValidMethods()
     {
-        return [Route::ANY, Route::GET, Route::POST, Route::PUT, Route::DELETE, Route::HEAD, Route::OPTIONS];
+        return [
+            Route::ANY,
+            Route::GET,
+            Route::POST,
+            Route::PUT,
+            Route::DELETE,
+            Route::HEAD,
+            Route::OPTIONS
+        ];
     }
 
     /**

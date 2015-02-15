@@ -12,7 +12,6 @@ class UrlManager extends Dispatcher
 
     public $urlsAlias = 'App.config.urls';
     public $patterns = null;
-    public $trailingSlash = true;
 
     public function __construct($config = [])
     {
@@ -41,15 +40,6 @@ class UrlManager extends Dispatcher
         return $handler;
     }
 
-    /**
-     * @param $path
-     * @void
-     */
-    public function trailingSlashCallback($path)
-    {
-        Mindy::app()->request->redirect($path);
-    }
-
     public function reverse($name, $args = [])
     {
         if (is_array($name)) {
@@ -61,23 +51,12 @@ class UrlManager extends Dispatcher
     }
 
     /**
+     * @DEPRECATED
      * @param $request \Mindy\Http\Request
      * @return false
      */
     public function parseUrl($request)
     {
-        $uri = $request->http->getRequestUri();
-        $url = ltrim(strtok($uri, "?"), '/');
-
-        $route = $this->dispatch($request->http->getRequestType(), $url);
-        if (!$route && $this->trailingSlash === true && substr($url, -1) !== '/') {
-            $newUri = $url . '/';
-            $route = $this->dispatch($request->http->getRequestType(), $newUri);
-            if ($route) {
-                $this->trailingSlashCallback($newUri);
-            }
-        }
-
-        return $route;
+        return $this->dispatch($request->http->getRequestType(), $request->http->getRequestUri());
     }
 }

@@ -22,6 +22,10 @@ class Dispatcher
      * @var
      */
     private $variableRouteData;
+    /**
+     * @var bool
+     */
+    public $trailingSlash = true;
 
     public function __construct(RouteCollector $collector)
     {
@@ -40,10 +44,31 @@ class Dispatcher
         $uri = ltrim($uri, '/');
         $data = $this->dispatchRoute($httpMethod, $uri);
         if ($data === false) {
-            return false;
+            if ($this->trailingSlash && substr($uri, -1) !== '/') {
+                $data = $this->dispatchRoute($httpMethod, $uri . '/');
+                if ($data === false) {
+                    return false;
+                } else {
+                    return $this->trailingSlashCallback($uri . '/');
+                }
+            } else {
+                return false;
+            }
         }
 
         return $this->getResponse($data);
+    }
+
+    /**
+     * Redirect to new url
+     * @param $uri
+     * @return bool
+     */
+    public function trailingSlashCallback($uri)
+    {
+        header("HTTP/1.1 301 Moved Permanently");
+        header("Location: " . $uri);
+        return true;
     }
 
     public function getResponse($data)
