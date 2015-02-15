@@ -36,10 +36,6 @@ class Patterns
      */
     protected $parentPrefix;
     /**
-     * @var bool
-     */
-    protected $trailingSlash = false;
-    /**
      * @var string
      */
     private $namespaceDelimeter = ':';
@@ -82,16 +78,6 @@ class Patterns
     }
 
     /**
-     * @param $value
-     * @return $this
-     */
-    public function setTrailingSlash($value)
-    {
-        $this->trailingSlash = $value;
-        return $this;
-    }
-
-    /**
      * @param RouteCollector $collector
      * @param array $patterns
      * @param string $parentPrefix
@@ -124,12 +110,7 @@ class Patterns
                     $method = strtoupper($params['method']);
                 }
 
-                $cleanPrefix = ltrim($urlPrefix, '/');
-                if (empty($cleanPrefix)) {
-                    $collector->$method([trim($parentPrefix, '/') . $cleanPrefix, $name], $callback);
-                } else {
-                    $collector->$method([trim($parentPrefix, '/') . '/' . $cleanPrefix, $name], $callback);
-                }
+                $collector->$method([trim($parentPrefix, '/') . $urlPrefix, $name], $callback);
             }
         }
     }

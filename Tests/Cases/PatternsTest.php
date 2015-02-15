@@ -34,8 +34,8 @@ class PatternsTest extends TestCase
         };
 
         $patterns = new Patterns([
-            '/' => new Patterns([
-                '/blog/' => [
+            '/blog' => new Patterns([
+                '/' => [
                     'name' => 'index',
                     'callback' => $callback
                 ]
@@ -45,16 +45,25 @@ class PatternsTest extends TestCase
                     'name' => 'index',
                     'callback' => $callback
                 ]
-            ], 'forum')
+            ], 'forum'),
+            '/page' => new Patterns([
+                '/' => [
+                    'name' => 'index',
+                    'callback' => $callback
+                ]
+            ], 'page')
         ]);
         $c = $patterns->getRouteCollector();
 
         $this->assertEquals('/blog/', $c->reverse('blog:index'));
         $this->assertEquals('/forum', $c->reverse('forum:index'));
+        $this->assertEquals('/page/', $c->reverse('page:index'));
 
         $d = new CustomDispatcher($c);
 
         $this->assertNotNull($d->dispatch('GET', '/blog/'));
         $this->assertEquals(301, $d->dispatch('GET', '/blog'));
+        $this->assertNotNull($d->dispatch('GET', '/page/'));
+        $this->assertEquals(301, $d->dispatch('GET', '/page'));
     }
 }
