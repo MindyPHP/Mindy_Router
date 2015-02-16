@@ -62,13 +62,12 @@ class Dispatcher
     /**
      * Redirect to new url
      * @param $uri
-     * @return bool
      */
     public function trailingSlashCallback($uri)
     {
         header("HTTP/1.1 301 Moved Permanently");
         header("Location: " . $uri);
-        return true;
+        die();
     }
 
     public function getResponse($data)
