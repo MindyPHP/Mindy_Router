@@ -6,6 +6,10 @@ use Mindy\Base\Mindy;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 
+/**
+ * Class UrlManager
+ * @package Mindy\Router
+ */
 class UrlManager extends Dispatcher
 {
     use Accessors, Configurator;

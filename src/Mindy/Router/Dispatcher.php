@@ -4,6 +4,10 @@ namespace Mindy\Router;
 
 use Mindy\Router\Exception\HttpMethodNotAllowedException;
 
+/**
+ * Class Dispatcher
+ * @package Mindy\Router
+ */
 class Dispatcher
 {
     /**

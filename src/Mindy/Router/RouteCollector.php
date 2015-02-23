@@ -6,6 +6,10 @@ use Mindy\Router\Exception\BadRouteException;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * Class RouteCollector
+ * @package Mindy\Router
+ */
 class RouteCollector
 {
     const DEFAULT_CONTROLLER_ROUTE = 'index';

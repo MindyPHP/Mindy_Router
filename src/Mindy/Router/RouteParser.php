@@ -5,9 +5,10 @@ namespace Mindy\Router;
 use Mindy\Router\Exception\BadRouteException;
 
 /**
- * Parses routes of the following form:
+ * Class RouteParser
+ * Parses routes of the following form: "/user/{name}/{id:[0-9]+}"
  *
- * "/user/{name}/{id:[0-9]+}"
+ * @package Mindy\Router
  */
 class RouteParser
 {
