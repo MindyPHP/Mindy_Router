@@ -89,7 +89,7 @@ class Dispatcher
         return $handler;
     }
 
-    private function dispatchRoute($httpMethod, $uri)
+    public function dispatchRoute($httpMethod, $uri)
     {
         if (isset($this->staticRouteMap[$uri])) {
             return $this->dispatchStaticRoute($httpMethod, $uri);
