@@ -53,7 +53,7 @@ class Dispatcher
                 if ($data === false) {
                     return false;
                 } else {
-                    $this->trailingSlashCallback($uri . '/');
+                    $this->trailingSlashCallback('/' . $uri . '/');
                 }
             } else {
                 return false;
