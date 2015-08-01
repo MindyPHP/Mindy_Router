@@ -44,16 +44,16 @@ class Dispatcher
 
     public function dispatch($httpMethod, $uri)
     {
-        $uri = strtok($uri, '?');
-        $uri = ltrim($uri, '/');
-        $data = $this->dispatchRoute($httpMethod, $uri);
+        $cleanUri = ltrim(strtok($uri, '?'), '/');
+        $data = $this->dispatchRoute($httpMethod, $cleanUri);
         if ($data === false) {
-            if ($this->trailingSlash && substr($uri, -1) !== '/') {
-                $data = $this->dispatchRoute($httpMethod, $uri . '/');
+            if ($this->trailingSlash && substr($cleanUri, -1) !== '/') {
+                $data = $this->dispatchRoute($httpMethod, $cleanUri . '/');
                 if ($data === false) {
                     return false;
                 } else {
-                    $this->trailingSlashCallback('/' . $uri . '/');
+                    $query = ltrim(str_replace($cleanUri, '', $uri), '/');
+                    $this->trailingSlashCallback('/' . $cleanUri . '/' . $query);
                 }
             } else {
                 return false;

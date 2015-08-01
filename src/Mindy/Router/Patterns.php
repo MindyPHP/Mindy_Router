@@ -21,7 +21,7 @@ class Patterns
      */
     public $namespace = '';
     /**
-     * @var
+     * @var string
      */
     protected $parentPrefix;
     /**
@@ -70,6 +70,7 @@ class Patterns
      * @param RouteCollector $collector
      * @param array $patterns
      * @param string $parentPrefix
+     * @throws Exception
      */
     public function parse(RouteCollector $collector, array $patterns, $parentPrefix = '')
     {
@@ -80,12 +81,14 @@ class Patterns
             } else {
                 if (!array_key_exists('callback', $params)) {
                     continue;
+                }
+
+                if ($params['callback'] instanceof Closure) {
+                    $callback = $params['callback'];
+                } else if (strpos($params['callback'], ':') !== false) {
+                    $callback = explode(':', $params['callback']);
                 } else {
-                    if ($params['callback'] instanceof Closure) {
-                        $callback = $params['callback'];
-                    } else {
-                        $callback = explode(':', $params['callback']);
-                    }
+                    throw new Exception("Incorrect callback in rule " . $params['name']);
                 }
 
                 if (!empty($this->namespace)) {
