@@ -2,7 +2,7 @@
     "name": "mindy/router",
     "homepage": "https://github.com/studio107/Mindy_Router",
     "description": "Fast request router for PHP",
-    "version": "0.1.5",
+    "version": "0.1.5.1",
     "keywords": ["routing", "router"],
     "license": "BSD-3-Clause",
     "authors": [{
