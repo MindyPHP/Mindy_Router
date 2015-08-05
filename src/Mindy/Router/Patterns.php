@@ -97,8 +97,8 @@ class Patterns
                     $name = $params['name'];
                 }
 
-                $method = 'any';
-                if (isset($params['method']) && in_array($params['method'], $collector->getValidMethods())) {
+                $method = Route::ANY;
+                if (isset($params['method']) && in_array(strtoupper($params['method']), $collector->getValidMethods())) {
                     $method = strtoupper($params['method']);
                 }
 
