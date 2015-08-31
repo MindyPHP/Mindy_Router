@@ -44,7 +44,7 @@ class Dispatcher
 
     public function dispatch($httpMethod, $uri)
     {
-        $cleanUri = ltrim(strtok($uri, '?'), '/');
+        $cleanUri = $uri == '/' ? $uri : ltrim(strtok($uri, '?'), '/');
         $data = $this->dispatchRoute($httpMethod, $cleanUri);
         if ($data === false) {
             if ($this->trailingSlash && substr($cleanUri, -1) !== '/') {
