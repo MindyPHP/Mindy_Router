@@ -76,7 +76,6 @@ class Patterns
     {
         foreach ($patterns as $urlPrefix => $params) {
             if ($params instanceof Patterns || $params instanceof CustomPatterns) {
-                /* @var $params Patterns */
                 $params->parse($collector, $params->getPatterns(), $urlPrefix);
             } else {
                 if (!array_key_exists('callback', $params)) {
