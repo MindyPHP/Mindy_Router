@@ -76,7 +76,7 @@ class Patterns
     {
         foreach ($patterns as $urlPrefix => $params) {
             if ($params instanceof Patterns || $params instanceof CustomPatterns) {
-                $params->parse($collector, $params->getPatterns(), $urlPrefix);
+                $params->parse($collector, $params->getPatterns(), trim($parentPrefix, '/') . $urlPrefix);
             } else {
                 if (!array_key_exists('callback', $params)) {
                     continue;
@@ -90,18 +90,23 @@ class Patterns
                     throw new Exception("Incorrect callback in rule " . $params['name']);
                 }
 
-                if (!empty($this->namespace)) {
-                    $name = $this->namespace . $this->namespaceDelimeter . $params['name'];
-                } else {
-                    $name = $params['name'];
-                }
-
                 $method = Route::ANY;
                 if (isset($params['method']) && in_array(strtoupper($params['method']), $collector->getValidMethods())) {
                     $method = strtoupper($params['method']);
                 }
 
-                $collector->$method([trim($parentPrefix, '/') . $urlPrefix, $name], $callback);
+                if (isset($params['name'])) {
+                    $name = $params['name'];
+                    if (!empty($this->namespace)) {
+                        $name = $this->namespace . $this->namespaceDelimeter . $params['name'];
+                    }
+
+                    $route = [trim($parentPrefix, '/') . $urlPrefix, $name];
+                } else {
+                    $route = trim($parentPrefix, '/') . $urlPrefix;
+                }
+
+                $collector->$method($route, $callback);
             }
         }
     }
