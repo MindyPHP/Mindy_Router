@@ -125,7 +125,8 @@ class Dispatcher
 
         $this->matchedRoute = $routes;
 
-        throw new HttpMethodNotAllowedException('Allow: ' . implode(', ', array_keys($routes)));
+        http_response_code(400);
+        die('Method not allowed. Allow: ' . implode(', ', array_keys($routes)));
     }
 
     private function dispatchVariableRoute($httpMethod, $uri)
