@@ -65,7 +65,7 @@ class RouteCollector
                 throw new BadRouteException("Expecting route variable '{$part['name']}'");
             }
         }
-        return str_replace('//', '/', '/' . implode('', $url));
+        return str_replace('//', '/', '/' . implode('/', $url));
     }
 
     /**
