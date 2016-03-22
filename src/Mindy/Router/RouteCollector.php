@@ -34,9 +34,9 @@ class RouteCollector
     /**
      * @param RouteParser $routeParser
      */
-    public function __construct(RouteParser $routeParser = null)
+    public function __construct(RouteParser $routeParser)
     {
-        $this->routeParser = $routeParser ?: new RouteParser();
+        $this->routeParser = $routeParser;
     }
 
     /**
@@ -65,7 +65,7 @@ class RouteCollector
                 throw new BadRouteException("Expecting route variable '{$part['name']}'");
             }
         }
-        return str_replace('//', '/', '/' . implode('/', $url));
+        return str_replace('//', '/', '/' . implode('', $url));
     }
 
     /**

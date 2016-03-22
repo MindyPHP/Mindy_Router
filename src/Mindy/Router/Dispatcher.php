@@ -151,7 +151,7 @@ class Dispatcher
                 if (!isset($matches[$i + 1])) {
                     unset($routes[$httpMethod][1][$varName]);
                 } else {
-                    $routes[$httpMethod][1][$varName] = ltrim($matches[$i + 1], '/');
+                    $routes[$httpMethod][1][$varName] = $matches[$i + 1];
                 }
             }
 

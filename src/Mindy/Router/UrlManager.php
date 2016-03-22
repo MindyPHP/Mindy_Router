@@ -20,8 +20,15 @@ class UrlManager extends Dispatcher
     public function __construct($config = [])
     {
         $this->configure($config);
-        $patterns = new Patterns(empty($this->patterns) ? $this->urlsAlias : $this->patterns);
-        parent::__construct($patterns->getRouteCollector());
+        $cache = Mindy::app()->cache;
+        $cacheKey = 'url_manager_routes';
+        $data = $cache->get($cacheKey);
+        if ($data === false) {
+            $patterns = new Patterns(empty($this->patterns) ? $this->urlsAlias : $this->patterns);
+            $data = $patterns->getRouteCollector();
+            $cache->set($cacheKey, $data, 3600);
+        }
+        parent::__construct($data);
         $this->init();
     }
 
