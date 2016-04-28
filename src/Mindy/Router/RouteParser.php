@@ -52,6 +52,7 @@ class RouteParser
     private $regexShortcuts = [
         ':i}' => ':[0-9]+}',
         ':a}' => ':[0-9A-Za-z]+}',
+        ':s}' => ':[A-Za-z]+}',
         ':h}' => ':[0-9A-Fa-f]+}',
         ':c}' => ':[a-zA-Z0-9+_\-\.]+}',
         ':w}' => ':.*}',
