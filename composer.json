@@ -13,8 +13,7 @@
     }, {
         "name": "Maxim Falaleev",
         "email": "max@studio107.ru",
-        "homepage": "http://studio107.ru",
-        "role": "Developer"
+        "homepage": "http://studio107.ru"
     }],
     "autoload": {
         "psr-4": {
