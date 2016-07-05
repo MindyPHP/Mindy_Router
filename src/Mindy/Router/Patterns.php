@@ -84,8 +84,10 @@ class Patterns
 
                 if ($params['callback'] instanceof Closure) {
                     $callback = $params['callback'];
-                } else if (strpos($params['callback'], ':') !== false) {
+                } else if (is_string($params['callback']) && strpos($params['callback'], ':') !== false) {
                     $callback = explode(':', $params['callback']);
+                } else if (is_array($params['callback'])) {
+                    $callback = $params['callback'];
                 } else {
                     throw new Exception("Incorrect callback in rule " . $params['name']);
                 }
