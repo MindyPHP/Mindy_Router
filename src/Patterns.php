@@ -92,7 +92,7 @@ class Patterns
                     throw new Exception("Incorrect callback in rule " . $params['name']);
                 }
 
-                $method = Route::ANY;
+                $method = Dispatcher::ANY;
                 if (isset($params['method']) && in_array(strtoupper($params['method']), $collector->getValidMethods())) {
                     $method = strtoupper($params['method']);
                 }

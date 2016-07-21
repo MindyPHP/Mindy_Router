@@ -15,13 +15,13 @@ class CustomPatterns
 
     public function parse(RouteCollector $collector, array $patterns, $parentPrefix = '')
     {
-        foreach($this->getPatterns() as $pattern => $route) {
-            if(isset($route['name'])) {
+        foreach ($this->getPatterns() as $pattern => $route) {
+            if (isset($route['name'])) {
                 $patternParams = [$pattern, $route['name']];
             } else {
                 $patternParams = $pattern;
             }
-            if(is_string($route['callback'])) {
+            if (is_string($route['callback'])) {
                 $callback = explode(':', $route['callback']);
             } else {
                 $callback = $route['callback'];

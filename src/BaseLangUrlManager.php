@@ -2,10 +2,22 @@
 
 namespace Mindy\Router;
 
+/**
+ * Class BaseLangUrlManager
+ * @package Mindy\Router
+ */
 abstract class BaseLangUrlManager extends UrlManager
 {
+    /**
+     * @var bool
+     */
     public $langInQuery = true;
 
+    /**
+     * @param $name
+     * @param array $args
+     * @return string
+     */
     public function reverse($name, $args = [])
     {
         if ($this->langInQuery) {

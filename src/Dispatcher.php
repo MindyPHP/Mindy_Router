@@ -10,6 +10,14 @@ use Mindy\Router\Exception\HttpMethodNotAllowedException;
  */
 class Dispatcher
 {
+    const ANY = 'ANY';
+    const GET = 'GET';
+    const HEAD = 'HEAD';
+    const POST = 'POST';
+    const PUT = 'PUT';
+    const DELETE = 'DELETE';
+    const OPTIONS = 'OPTIONS';
+    
     /**
      * @var RouteCollector
      */
@@ -111,10 +119,10 @@ class Dispatcher
 
     private function checkFallbacks($routes, $httpMethod)
     {
-        $additional = [Route::ANY];
+        $additional = [self::ANY];
 
-        if ($httpMethod === Route::HEAD) {
-            $additional[] = Route::GET;
+        if ($httpMethod === self::HEAD) {
+            $additional[] = self::GET;
         }
 
         foreach ($additional as $method) {
@@ -125,8 +133,7 @@ class Dispatcher
 
         $this->matchedRoute = $routes;
 
-        http_response_code(400);
-        die('Method not allowed. Allow: ' . implode(', ', array_keys($routes)));
+        throw new HttpMethodNotAllowedException('Allow: ' . implode(', ', array_keys($routes)));
     }
 
     private function dispatchVariableRoute($httpMethod, $uri)

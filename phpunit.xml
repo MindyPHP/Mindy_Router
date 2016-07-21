@@ -1,43 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         syntaxCheck="true"
-         bootstrap="Tests/bootstrap.php"
-        >
-    <php>
-        <ini name="memory_limit" value="-1"/>
-        <ini name="display_errors" value="1"/>
-        <ini name="error_reporting" value="-1"/>
-    </php>
-
+<phpunit colors="true" strict="true" backupGlobals="false" bootstrap="vendor/autoload.php">
     <testsuites>
-        <testsuite name="Router">
-            <directory>Tests/Cases/</directory>
+        <testsuite name="All">
+            <directory>test</directory>
         </testsuite>
     </testsuites>
-
-    <groups>
-        <exclude>
-            <group>benchmark</group>
-        </exclude>
-    </groups>
-
+    <php>
+        <ini name="error_reporting" value="32767"/>
+    </php>
+    <!--
     <filter>
         <whitelist>
-            <directory suffix=".php">../src/</directory>
+            <directory suffix=".php">src/</directory>
         </whitelist>
     </filter>
-
-    <!--
     <logging>
-        <log type="coverage-html" target="build/logs/coverage" charset="UTF-8"
+        <log type="coverage-html" target="./coverage" charset="UTF-8"
              yui="true" highlight="true" lowUpperBound="50" highLowerBound="80"/>
     </logging>
     -->

@@ -146,7 +146,7 @@ class RouteCollector
      */
     public function get($route, $handler)
     {
-        return $this->addRoute(Route::GET, $route, $handler);
+        return $this->addRoute(Dispatcher::GET, $route, $handler);
     }
 
     /**
@@ -156,7 +156,7 @@ class RouteCollector
      */
     public function head($route, $handler)
     {
-        return $this->addRoute(Route::HEAD, $route, $handler);
+        return $this->addRoute(Dispatcher::HEAD, $route, $handler);
     }
 
     /**
@@ -166,7 +166,7 @@ class RouteCollector
      */
     public function post($route, $handler)
     {
-        return $this->addRoute(Route::POST, $route, $handler);
+        return $this->addRoute(Dispatcher::POST, $route, $handler);
     }
 
     /**
@@ -176,7 +176,7 @@ class RouteCollector
      */
     public function put($route, $handler)
     {
-        return $this->addRoute(Route::PUT, $route, $handler);
+        return $this->addRoute(Dispatcher::PUT, $route, $handler);
     }
 
     /**
@@ -186,7 +186,7 @@ class RouteCollector
      */
     public function delete($route, $handler)
     {
-        return $this->addRoute(Route::DELETE, $route, $handler);
+        return $this->addRoute(Dispatcher::DELETE, $route, $handler);
     }
 
     /**
@@ -196,7 +196,7 @@ class RouteCollector
      */
     public function options($route, $handler)
     {
-        return $this->addRoute(Route::OPTIONS, $route, $handler);
+        return $this->addRoute(Dispatcher::OPTIONS, $route, $handler);
     }
 
     /**
@@ -206,7 +206,7 @@ class RouteCollector
      */
     public function any($route, $handler)
     {
-        return $this->addRoute(Route::ANY, $route, $handler);
+        return $this->addRoute(Dispatcher::ANY, $route, $handler);
     }
 
     /**
@@ -265,13 +265,13 @@ class RouteCollector
     public function getValidMethods()
     {
         return [
-            Route::ANY,
-            Route::GET,
-            Route::POST,
-            Route::PUT,
-            Route::DELETE,
-            Route::HEAD,
-            Route::OPTIONS
+            Dispatcher::ANY,
+            Dispatcher::GET,
+            Dispatcher::POST,
+            Dispatcher::PUT,
+            Dispatcher::DELETE,
+            Dispatcher::HEAD,
+            Dispatcher::OPTIONS
         ];
     }
 

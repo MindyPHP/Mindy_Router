@@ -15,7 +15,6 @@ namespace Mindy\Router\Dispatcher;
 
 use Mindy\Router\Dispatcher;
 use Mindy\Router\Patterns;
-use TestCase;
 
 class CustomDispatcher extends Dispatcher
 {
@@ -25,11 +24,11 @@ class CustomDispatcher extends Dispatcher
     }
 }
 
-class PatternsTest extends TestCase
+class PatternsTest extends \PHPUnit_Framework_TestCase
 {
     public function testSimple()
     {
-        $callback = function() {
+        $callback = function () {
             return true;
         };
 

@@ -3,6 +3,7 @@
 namespace Mindy\Router\Dispatcher;
 
 use Mindy\Router\Dispatcher;
+use Mindy\Router\Exception\HttpMethodNotAllowedException;
 use Mindy\Router\Route;
 use Mindy\Router\RouteCollector;
 use Mindy\Router\RouteParser;
@@ -127,7 +128,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
      */
     public function testMethodNotAllowedDispatches($method, $uri, $callback, $allowed)
     {
-        $this->setExpectedException('\Mindy\Router\Exception\HttpMethodNotAllowedException', "Allow: " . implode(', ', $allowed));
+        $this->setExpectedException(HttpMethodNotAllowedException::class, "Allow: " . implode(', ', $allowed));
 
         $r = $this->router();
         $callback($r);
@@ -214,15 +215,15 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
     public function testValidMethods()
     {
-        $this->assertEquals(array(
-            Route::ANY,
-            Route::GET,
-            Route::POST,
-            Route::PUT,
-            Route::DELETE,
-            Route::HEAD,
-            Route::OPTIONS,
-        ), $this->router()->getValidMethods());
+        $this->assertEquals([
+            Dispatcher::ANY,
+            Dispatcher::GET,
+            Dispatcher::POST,
+            Dispatcher::PUT,
+            Dispatcher::DELETE,
+            Dispatcher::HEAD,
+            Dispatcher::OPTIONS,
+        ], $this->router()->getValidMethods());
     }
 
     public function testRestfulControllerMethods()
@@ -236,20 +237,20 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($r->getValidMethods(), array_keys($data[0]['user/test']));
 
-        $this->assertEquals(array(Route::ANY), array_keys($data[0]['user']));
-        $this->assertEquals(array(Route::ANY), array_keys($data[0]['user/index']));
+        $this->assertEquals(array(Dispatcher::ANY), array_keys($data[0]['user']));
+        $this->assertEquals(array(Dispatcher::ANY), array_keys($data[0]['user/index']));
 
-        $this->assertEquals('hyphenated', $this->dispatch($r, Route::GET, 'user/camel-case-hyphenated'));
+        $this->assertEquals('hyphenated', $this->dispatch($r, Dispatcher::GET, 'user/camel-case-hyphenated'));
 
-        $this->assertEquals('joe', $this->dispatch($r, Route::GET, 'user/parameter/joe'));
-        $this->assertEquals('joe', $this->dispatch($r, Route::GET, 'user/parameter-hyphenated/joe'));
+        $this->assertEquals('joe', $this->dispatch($r, Dispatcher::GET, 'user/parameter/joe'));
+        $this->assertEquals('joe', $this->dispatch($r, Dispatcher::GET, 'user/parameter-hyphenated/joe'));
 
-        $this->assertEquals('joe', $this->dispatch($r, Route::GET, 'user/parameter-optional/joe'));
+        $this->assertEquals('joe', $this->dispatch($r, Dispatcher::GET, 'user/parameter-optional/joe'));
 
-//        $this->assertEquals('default', $this->dispatch($r, Route::GET, 'user/parameter-optional'));
-//        $this->assertEquals('joedefault', $this->dispatch($r, Route::GET, 'user/parameter-optional-required/joe'));
+//        $this->assertEquals('default', $this->dispatch($r, Dispatcher::GET, 'user/parameter-optional'));
+//        $this->assertEquals('joedefault', $this->dispatch($r, Dispatcher::GET, 'user/parameter-optional-required/joe'));
 
-        $this->assertEquals('joegreen', $this->dispatch($r, Route::GET, 'user/parameter-optional-required/joe/green'));
+        $this->assertEquals('joegreen', $this->dispatch($r, Dispatcher::GET, 'user/parameter-optional-required/joe/green'));
 
     }
 
@@ -259,7 +260,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
         $r->controller('/user', __NAMESPACE__ . '\\Test');
 
-        $this->assertFalse($this->dispatch($r, Route::GET, '/user/parameter-optional-required'));
+        $this->assertFalse($this->dispatch($r, Dispatcher::GET, '/user/parameter-optional-required'));
     }
 
     public function testRestfulRequiredControllerMethodThrows()
@@ -268,7 +269,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
         $r->controller('/user', __NAMESPACE__ . '\\Test');
 
-        $this->assertFalse($this->dispatch($r, Route::GET, '/user/parameter-required'));
+        $this->assertFalse($this->dispatch($r, Dispatcher::GET, '/user/parameter-required'));
     }
 
     public function testRestfulHyphenateControllerMethodThrows()
@@ -277,7 +278,7 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
 
         $r->controller('/user', __NAMESPACE__ . '\\Test');
 
-        $this->assertFalse($this->dispatch($r, Route::GET, 'user/camelcasehyphenated'));
+        $this->assertFalse($this->dispatch($r, Dispatcher::GET, 'user/camelcasehyphenated'));
     }
 
     public function testRestfulMethods()
