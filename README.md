@@ -2,7 +2,6 @@ PHRoute - Fast request router for PHP
 =======================================
 
 [![Build Status](https://travis-ci.org/MindyPHP/Mindy_Router.svg?branch=master)](https://travis-ci.org/MindyPHP/Mindy_Router)
-[![Coverage Status](https://coveralls.io/repos/studio107/Mindy_Router/badge.png)](https://coveralls.io/r/studio107/Mindy_Router)
 
 ## This library provides a fast implementation of a regular expression based router.
 
