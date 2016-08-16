@@ -26,7 +26,7 @@ Install via composer
 ```
 {
     "require": {
-        "phroute/phroute": "1.*"
+        "mindy/router": "2.*"
     }
 }
 

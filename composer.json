@@ -1,12 +1,13 @@
 {
   "name": "mindy/router",
+  "type": "library",
   "homepage": "https://github.com/MindyPHP/Mindy_Router",
   "description": "Fast request router for PHP",
   "keywords": [
     "routing",
     "router"
   ],
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "authors": [
     {
       "name": "Joe Green",
@@ -29,14 +30,15 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Mindy\\Router\\": "test/"
+      "Mindy\\Router\\Tests\\": "test/"
     }
   },
   "require": {
     "php": ">=5.6"
   },
   "require-dev": {
-    "satooshi/php-coveralls": "dev-master"
+    "phpunit/phpunit": "*",
+    "phpunit/php-code-coverage": "*"
   },
   "support": {
     "issues": "https://github.com/MindyPHP/Mindy/issues?state=open"

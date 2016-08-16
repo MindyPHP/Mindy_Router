@@ -1,13 +1,12 @@
 <?php
 
-include '../vendor/autoload.php';
+include 'vendor/autoload.php';
 
 use Mindy\Router\Dispatcher;
 use Mindy\Router\RouteCollector;
 use Mindy\Router\RouteParser;
 
-$routeParser = new RouteParser();
-$collector = new RouteCollector($routeParser);
+$collector = new RouteCollector(new RouteParser);
 
 $collector->get('/test', function () {
 
@@ -54,4 +53,3 @@ while ($seconds < $runTime) {
 }
 
 echo PHP_EOL;
-    

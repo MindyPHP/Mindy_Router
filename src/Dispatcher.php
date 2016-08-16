@@ -39,17 +39,31 @@ class Dispatcher
      */
     public $trailingSlash = true;
 
+    /**
+     * Dispatcher constructor.
+     * @param RouteCollector $collector
+     */
     public function __construct(RouteCollector $collector)
     {
         $this->collector = $collector;
         list($this->staticRouteMap, $this->variableRouteData) = $collector->getData();
     }
 
+    /**
+     * @param $name
+     * @param array $args
+     * @return string
+     */
     public function reverse($name, $args = [])
     {
         return $this->collector->reverse($name, $args);
     }
 
+    /**
+     * @param $httpMethod
+     * @param $uri
+     * @return bool|mixed
+     */
     public function dispatch($httpMethod, $uri)
     {
         $cleanUri = ltrim(strtok($uri, '?'), '/');
@@ -82,12 +96,20 @@ class Dispatcher
         die();
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     public function getResponse($data)
     {
         list($handler, $vars) = $data;
         return call_user_func_array($this->resolveHandler($handler), $vars);
     }
 
+    /**
+     * @param $handler
+     * @return array
+     */
     public function resolveHandler($handler)
     {
         if (is_array($handler) and is_string($handler[0])) {
@@ -97,6 +119,11 @@ class Dispatcher
         return $handler;
     }
 
+    /**
+     * @param $httpMethod
+     * @param $uri
+     * @return bool
+     */
     public function dispatchRoute($httpMethod, $uri)
     {
         if (isset($this->staticRouteMap[$uri])) {
@@ -106,6 +133,12 @@ class Dispatcher
         return $this->dispatchVariableRoute($httpMethod, $uri);
     }
 
+    /**
+     * @param $httpMethod
+     * @param $uri
+     * @return mixed
+     * @throws HttpMethodNotAllowedException
+     */
     private function dispatchStaticRoute($httpMethod, $uri)
     {
         $routes = $this->staticRouteMap[$uri];
@@ -117,6 +150,12 @@ class Dispatcher
         return $routes[$httpMethod];
     }
 
+    /**
+     * @param $routes
+     * @param $httpMethod
+     * @return mixed
+     * @throws HttpMethodNotAllowedException
+     */
     private function checkFallbacks($routes, $httpMethod)
     {
         $additional = [self::ANY];
@@ -136,6 +175,12 @@ class Dispatcher
         throw new HttpMethodNotAllowedException('Allow: ' . implode(', ', array_keys($routes)));
     }
 
+    /**
+     * @param $httpMethod
+     * @param $uri
+     * @return bool
+     * @throws HttpMethodNotAllowedException
+     */
     private function dispatchVariableRoute($httpMethod, $uri)
     {
         foreach ($this->variableRouteData as $data) {

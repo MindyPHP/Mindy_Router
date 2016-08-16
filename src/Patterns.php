@@ -66,6 +66,19 @@ class Patterns
         return $this->patterns;
     }
 
+    protected function fetchCallback($callback)
+    {
+        if (is_callable($callback)) {
+            return $callback;
+        } else if (is_string($callback) && strpos($callback, ':') !== false) {
+            return explode(':', $callback);
+        } else if (is_array($callback)) {
+            return $callback;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @param RouteCollector $collector
      * @param array $patterns
@@ -82,13 +95,8 @@ class Patterns
                     continue;
                 }
 
-                if ($params['callback'] instanceof Closure) {
-                    $callback = $params['callback'];
-                } else if (is_string($params['callback']) && strpos($params['callback'], ':') !== false) {
-                    $callback = explode(':', $params['callback']);
-                } else if (is_array($params['callback'])) {
-                    $callback = $params['callback'];
-                } else {
+                $callback = $this->fetchCallback($params['callback']);
+                if ($callback === null) {
                     throw new Exception("Incorrect callback in rule " . $params['name']);
                 }
 

@@ -11,7 +11,7 @@
  * @date 14/02/15 18:24
  */
 
-namespace Mindy\Router\Dispatcher;
+namespace Mindy\Router\Tests;
 
 use Mindy\Router\Dispatcher;
 use Mindy\Router\Patterns;

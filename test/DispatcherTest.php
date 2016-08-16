@@ -1,10 +1,9 @@
 <?php
 
-namespace Mindy\Router\Dispatcher;
+namespace Mindy\Router\Tests;
 
 use Mindy\Router\Dispatcher;
 use Mindy\Router\Exception\HttpMethodNotAllowedException;
-use Mindy\Router\Route;
 use Mindy\Router\RouteCollector;
 use Mindy\Router\RouteParser;
 
@@ -138,11 +137,8 @@ class DispatcherTest extends \PHPUnit_Framework_TestCase
     public function testStringObjectIsDispatched()
     {
         $r = $this->router();
-
         $r->addRoute('GET', '/foo', array(__NAMESPACE__ . '\\Test', 'route'));
-
         $response = $this->dispatch($r, 'GET', '/foo');
-
         $this->assertEquals('testRoute', $response);
     }
 

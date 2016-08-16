@@ -6,7 +6,7 @@
  * Time: 13:18
  */
 
-namespace Mindy\Router\Dispatcher;
+namespace Mindy\Router\Tests;
 
 use Mindy\Router\Dispatcher;
 use Mindy\Router\RouteCollector;
